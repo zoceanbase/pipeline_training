@@ -1,0 +1,26 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: maven:3-jdk-7
+      shellScript: |-
+        mkdir -p /root/.m2 && mv settings.xml /root/.m2/
+        mvn clean install
+    env:
+      NEXUS_HOST: http://sonatype-nexus-service.sonatype-nexus:8081
+    envFrom:
+    - sourceName: nexus-key
+      sourceKey: token
+      targetKey: NEXUS_TOKEN
+- name: Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: example-greenhouse:${CICD_EXECUTION_SEQUENCE}
+- name: Deploy
+  steps:
+  - runScriptConfig:
+      image: lachlanevenson/k8s-kubectl:v1.12.2
+      shellScript: kubectl --namespace p-l9lhc-pipeline set image deployment/example-greenhouse
+        maven=${CICD_LOCAL_REGISTRY}/example-greenhouse:${CICD_EXECUTION_SEQUENCE}
