@@ -1,0 +1,22 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: maven:3-jdk-8
+      shellScript: |-
+        mkdir -p /root/.m2 && mv settings.xml /root/.m2/
+        mvn clean install org.sonarsource.scanner.maven:sonar-maven-plugin:3.5.0.1254:sonar \
+          -Dsonar.host.url=${SONAR_HOST} \
+          -Dsonar.login=${SONAR_KEY}
+    env:
+      NEXUS_HOST: http://sonatype-nexus-service.sonatype-nexus:8081
+    envFrom:
+    - sourceName: nexus-key
+      sourceKey: token
+      targetKey: NEXUS_TOKEN
+    - sourceName: sonar-key
+      sourceKey: host
+      targetKey: SONAR_HOST
+    - sourceName: sonar-key
+      sourceKey: token
+      targetKey: SONAR_KEY
