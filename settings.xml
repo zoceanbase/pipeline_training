@@ -1,0 +1,44 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository>/usr/share/maven/ref/repository</localRepository>
+  <demoRepository>${env.NEXUS_HOST}</demoRepository>
+  <server> 
+    <id>maven-snapshots</id> 
+    <username>admin</username> 
+    <password>${env.NEXUS_TOKEN}</password> 
+  </server>
+  <server> 
+    <id>maven-releases</id> 
+    <username>admin</username> 
+    <password>${env.NEXUS_TOKEN}</password> 
+  </server>
+  <mirrors>
+     <mirror>
+        <id>central-mirror</id>
+        <name>central mirror</name>
+        <url>${env.NEXUS_HOST}/repository/maven-central</url>
+        <mirrorOf>central</mirrorOf>
+    </mirror>
+    <mirror>
+        <id>spring-repository-mirror</id>
+        <mirrorOf>spring-repository</mirrorOf>
+        <name>spring repository mirror</name>
+        <url>${env.NEXUS_HOST}/repository/spring-releases</url>
+    </mirror>
+    <mirror>
+        <id>spring-snapshot-mirror</id>
+        <mirrorOf>spring-snapshot</mirrorOf>
+        <name>spring snapshot mirror</name>
+        <url>${env.NEXUS_HOST}/repository/spring-snapshots</url>
+    </mirror>
+    <mirror>
+        <id>spring-milestone-mirror</id>
+        <mirrorOf>spring-milestone</mirrorOf>
+        <name>spring milestone mirror</name>
+        <url>${env.NEXUS_HOST}/repository/spring-milestones</url>
+    </mirror>
+</mirrors>
+
+</settings>

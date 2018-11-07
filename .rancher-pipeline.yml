@@ -1,0 +1,29 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: maven:3-jdk-7
+      shellScript: |-
+        mkdir -p /root/.m2 && mv settings.xml /root/.m2/
+        mvn clean install
+    env:
+      NEXUS_HOST: http://sonatype-nexus-service.sonatype-nexus:8081
+    envFrom:
+    - sourceName: nexus-key
+      sourceKey: token
+      targetKey: NEXUS_TOKEN
+- name: Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: example-greenhouse:${CICD_EXECUTION_SEQUENCE}
+      pushRemote: true
+      registry: 47.107.157.185:31803
+    env:
+      PLUGIN_INSECURE: "true"
+      PLUGIN_MIRROR: http://sonatype-nexus-service.sonatype-nexus:8083
+- name: Deploy
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
