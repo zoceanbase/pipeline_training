@@ -8,10 +8,6 @@ stages:
         mvn clean install
     env:
       NEXUS_HOST: http://sonatype-nexus-service.sonatype-nexus:8081
-    envFrom:
-    - sourceName: nexus-key
-      sourceKey: token
-      targetKey: NEXUS_TOKEN
 - name: Publish
   steps:
   - publishImageConfig:
@@ -27,3 +23,4 @@ stages:
   steps:
   - applyYamlConfig:
       path: ./deployment.yaml
+notification: {}
